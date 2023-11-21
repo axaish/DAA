@@ -1,38 +1,53 @@
 #include <stdio.h>
-int digitSum(int num) {
+#include <stdlib.h>
+int sumOfDigits(int num)
+{
     int sum = 0;
-    while (num > 0) {
+    while (num > 0)
+	{
         sum += num % 10;
         num /= 10;
     }
     return sum;
 }
-int maxSumWithEqualDigitSums(int nums[], int size) {
-    const int maxDigitSum = 200;
-    int digitSumIndex[maxDigitSum * 2 + 1];
-    for (int i = 0; i < maxDigitSum * 2 + 1; i++) {
-        digitSumIndex[i] = -1;
-    }
-
-    int maxSum = 0;
-    for (int i = 0; i < size; i++) {
-        int sum = digitSum(nums[i]);
-        if (digitSumIndex[sum] != -1) {
-            int index = digitSumIndex[sum];
-            maxSum = (nums[index] + nums[i] > maxSum) ? (nums[index] + nums[i]) : maxSum;
+int maxSumOfEqualDigits(int nums[], int size)
+{
+    int maxSum = -1;
+    for (int i = 0; i < size; i++)
+	{
+        for (int j = i + 1; j < size; j++)
+		{
+            if (sumOfDigits(nums[i]) == sumOfDigits(nums[j]))
+			{
+                int currentSum = nums[i] + nums[j];
+                if (currentSum > maxSum)
+				{
+                    maxSum = currentSum;
+                }
+            }
         }
-        digitSumIndex[sum] = (digitSumIndex[sum] == -1) ? i : digitSumIndex[sum];
     }
-
     return maxSum;
 }
-
-int main() {
-    int nums[] = { 51, 71, 17, 42 };
-    int size = sizeof(nums) / sizeof(nums[0]);
-
-    int maxSum = maxSumWithEqualDigitSums(nums, size);
-    printf("Maximum value of nums[i] + nums[j]: %d\n", maxSum);
-
+int main()
+{
+    int size;
+    printf("Enter the size of the array: ");
+    scanf("%d", &size);
+    int nums[size];
+    printf("Enter %d positive integers: ", size);
+    for (int i = 0; i < size; i++)
+	{
+        scanf("%d", &nums[i]);
+    }
+    int result = maxSumOfEqualDigits(nums, size);
+    if (result == -1)
+	{
+        printf("No two numbers have the same sum of digits.\n");
+    }
+	else
+	{
+        printf("Maximum value of nums[i] + nums[j] with equal sum of digits: %d\n", result);
+    }
     return 0;
 }
